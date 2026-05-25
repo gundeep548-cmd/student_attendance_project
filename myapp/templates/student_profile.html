@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Dashboard</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f172a; color: #f8fafc; margin: 0; padding: 40px; }
+        .dashboard-card { max-width: 800px; background: #1e293b; margin: 0 auto; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        .header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #334155; padding-bottom: 15px; }
+        .profile-container { display: flex; gap: 30px; margin-top: 25px; align-items: center; }
+        .profile-pic { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 4px solid #38bdf8; }
+        .details h3 { margin: 8px 0; color: #cbd5e1; }
+        .stats-box { background: #0f172a; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center; font-size: 1.2rem; }
+        .stats-box span { color: #38bdf8; font-weight: bold; }
+        table { width: 100%; margin-top: 25px; border-collapse: collapse; background: #1e293b; text-align: left; }
+        th, td { padding: 12px; border-bottom: 1px solid #334155; }
+        th { background: #334155; color: #38bdf8; }
+        .status-present { color: #4ade80; font-weight: bold; }
+        .status-absent { color: #f87171; font-weight: bold; }
+        .btn-logout { background: #f87171; color: white; padding: 8px 16px; border-radius: 6px; text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="dashboard-card">
+    <div class="header">
+        <h2>Welcome, {{ student.name }}!</h2>
+        <a href="{% url 'student_logout' %}" class="btn-logout">Logout</a>
+    </div>
+
+    <div class="profile-container">
+        {% if student.image %}
+            <img src="{{ student.image.url }}" class="profile-pic" alt="Student Image">
+        {% else %}
+            <div class="profile-pic" style="background:#334155; display:flex; align-items:center; justify-content:center;">No Img</div>
+        {% endif %}
+        <div class="details">
+            <h3><strong>Roll No:</strong> {{ student.roll }}</h3>
+            <h3><strong>Course:</strong> {{ student.course }}</h3>
+            <h3><strong>Email:</strong> {{ student.email }}</h3>
+        </div>
+    </div>
+
+    <div class="stats-box">
+        Overall Attendance Percentage: <span>{{ percentage }}%</span> ({{ present_count }}/{{ total_classes }} Days Present)
+    </div>
+
+    <h3>Your Attendance Logs</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for record in attendance_records %}
+            <tr>
+                <td>{{ record.date }}</td>
+                <td>
+                    {% if record.status == 'Present' %}
+                        <span class="status-present">Present</span>
+                    {% else %}
+                        <span class="status-absent">Absent</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" style="text-align: center; color: #94a3b8;">No attendance records found yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

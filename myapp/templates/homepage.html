@@ -1,0 +1,107 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #141e30, #243b55);
+        }
+
+        .container {
+            width: 380px; /* Thoda wide kiya taaki text easily fit ho sake */
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px 30px;
+            border-radius: 20px;
+            text-align: center;
+            color: white;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        p {
+            margin-bottom: 30px;
+            font-size: 15px;
+            color: #ddd;
+        }
+
+        .menu-links {
+            display: flex;
+            flex-direction: column;
+            gap: 15px; /* Sabhi buttons ke beech barabar gap */
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        /* Saare link buttons ki single master styling */
+        .btn-link {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #00c6ff;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s ease;
+        }
+
+        /* Hover effect sahi kiya */
+        .btn-link:hover {
+            background-color: #0072ff;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: #ddd;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Smart Attendance</h1>
+        <p>Using Facial Recognition</p>
+
+        <div class="menu-links">
+            <a href="{% url 'login' %}" class="btn-link">Login</a>
+            <a href="{% url 'add_student' %}" class="btn-link">Add Student</a>
+            <a href="{% url 'mark_attendance' %}" class="btn-link">Mark Attendance</a>
+            <a href="{% url 'attendance_report' %}" class="btn-link">View Attendance Report</a>
+            <a href="{% url 'view_students_attendance' %}" class="btn-link">View All Attendance</a>
+        </div>
+
+        <footer>
+            <p>Project By</p>
+            <strong>Gundeep Kaur</strong>
+            <p>Department of Computer Science & Engineering</p>
+        </footer>
+    </div>
+</body>
+</html>

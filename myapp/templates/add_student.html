@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Student</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .webcam-area {
+            text-align: center;
+            margin: 15px 0;
+        }
+        #webcam {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            background: #222;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        .btn-capture {
+            background-color: #2ecc71;
+        }
+        #statusMessage {
+            margin-top: 15px;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Add Student Profile</h2>
+    
+    <form id="addStudentForm">
+        {% csrf_token %}
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="text" id="roll" placeholder="Roll No / Student ID" required>
+        <input type="text" id="course" placeholder="Course / Department" required>
+        <input type="email" id="email" placeholder="Email Address" required>
+        
+        <div class="webcam-area">
+            <video id="webcam" autoplay playsinline></video>
+            <canvas id="photoCanvas" style="display:none;"></canvas>
+            <input type="hidden" id="image_data">
+            <button type="button" class="btn btn-capture" id="captureBtn">Take Snap 📸</button>
+        </div>
+
+        <button type="submit" class="btn">Register Student</button>
+    </form>
+    
+    <div id="statusMessage"></div>
+</div>
+
+<script>
+    const webcam = document.getElementById('webcam');
+    const canvas = document.getElementById('photoCanvas');
+    const captureBtn = document.getElementById('captureBtn');
+    const imageDataInput = document.getElementById('image_data');
+    const form = document.getElementById('addStudentForm');
+    const statusMsg = document.getElementById('statusMessage');
+
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+            webcam.srcObject = stream;
+        })
+        .catch(err => {
+            statusMsg.innerHTML = "<span style='color: red;'>Webcam blocked! Please allow camera access.</span>";
+        });
+
+    
+    captureBtn.addEventListener('click', () => {
+        const ctx = canvas.getContext('2d');
+        canvas.width = webcam.videoWidth;
+        canvas.height = webcam.videoHeight;
+        ctx.drawImage(webcam, 0, 0, canvas.width, canvas.height);
+        
+        const base64Data = canvas.toDataURL('image/jpeg');
+        imageDataInput.value = base64Data;
+        
+        captureBtn.innerText = "Snap Captured successfully! ✔️";
+        captureBtn.style.backgroundColor = "#27ae60";
+    });
+
+    
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        if (!imageDataInput.value) {
+            statusMsg.innerHTML = "<span style='color: red;'>Pehle camera se photo capture karein!</span>";
+            return;
+        }
+
+        statusMsg.innerHTML = "<span style='color: orange;'>Processing student details...</span>";
+
+        
+        const payload = {
+            name: document.getElementById('name').value,
+            roll: document.getElementById('roll').value,
+            course: document.getElementById('course').value,
+            email: document.getElementById('email').value,
+            image: imageDataInput.value
+        };
+
+        
+        fetch("{% url 'save_student' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                statusMsg.innerHTML = `<span style='color: green;'>✔️ ${data.message}</span>`;
+                form.reset();
+                imageDataInput.value = "";
+                captureBtn.innerText = "Take Snap 📸";
+                captureBtn.style.backgroundColor = "#2ecc71";
+            } else {
+                statusMsg.innerHTML = `<span style='color: red;'>❌ Error: ${data.message}</span>`;
+            }
+        })
+        .catch(error => {
+            statusMsg.innerHTML = "<span style='color: red;'>Server is busy or offline!</span>";
+        });
+    });
+</script>
+
+</body>
+</html>

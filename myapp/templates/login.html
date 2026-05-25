@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Student Login</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            /* Yahan bg copy.jpg load hoga dynamic static tag se */
+            background: url("{% static 'bg copy.jpg' %}") no-repeat center center/cover;
+            height: 100vh;
+        }
+
+        .login-box {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 320px;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            background: rgba(80, 111, 135, 0.8);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            animation: fadeIn 1s ease;
+        }
+
+        .user-icon {
+            width: 70px;
+            height: 70px;
+            margin: auto;
+            border-radius: 50%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .user-icon i {
+            color: white;
+            font-size: 30px;
+        }
+
+        .login-box h2 {
+            color: black;
+            margin-bottom: 20px;
+        }
+
+        .login-box input {
+            width: 90%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            background: #f1f1f1;
+        }
+
+        .login-box input:focus {
+            box-shadow: 0 0 8px rgba(255,255,255,0.8);
+            background: #fff;
+        }
+
+        .password-box {
+            position: relative;
+        }
+
+        .password-box span {
+            position: absolute;
+            right: 20px;
+            top: 22px;
+            cursor: pointer;
+        }
+
+        .password-box span:hover {
+            transform: scale(1.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 15px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(to right, #36d1dc, #5b86e5);
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+        }
+
+        /* Error Messages Alert Styling */
+        .error-msg {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 8px;
+            margin: 10px 0;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            border: 1px solid #f5c6cb;
+        }
+
+        #loader {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ccc;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -60%);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="loader">
+        <div class="spinner"></div>
+    </div>
+
+    <div class="login-box">
+        <div class="user-icon">
+            <i class="fa fa-user"></i>
+        </div>
+
+        <h2>Student Login</h2>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="error-msg">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        <form id="loginForm" method="POST" action="{% url 'student_login_process' %}">
+            {% csrf_token %}
+            
+            <input type="text" id="username" name="name" placeholder="Student Full Name" required>
+
+            <div class="password-box">
+                <input type="password" id="password" name="roll" placeholder="Roll Number (Password)" required>
+                <span id="eyeIcon" onclick="togglePassword()">👁️</span>
+            </div>
+
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <script>
+        function togglePassword() {
+            let pass = document.getElementById("password");
+            let icon = document.getElementById("eyeIcon");
+
+            if (pass.type === "password") {
+                pass.type = "text";
+                icon.textContent = "🙈";
+            } else {
+                pass.type = "password";
+                icon.textContent = "👁️";
+            }
+        }
+
+        // FIXED: Loader ghumne ke baad actual form backend par submit hoga
+        document.getElementById("loginForm").addEventListener("submit", function(e) {
+            e.preventDefault(); // Pehle default submission rokenge animation ke liye
+            document.getElementById("loader").style.display = "flex";
+            
+            setTimeout(() => {
+                // Bina alert ke smooth database check par bhej rahe hain
+                this.submit(); 
+            }, 1200);
+        });
+    </script>
+</body>
+</html>

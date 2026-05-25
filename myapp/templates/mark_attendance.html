@@ -1,0 +1,264 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mark Attendance</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(to right, #141e30, #243b55);
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 30px;
+            border-radius: 15px;
+            color: white;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 28px;
+        }
+
+        .controls-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .date-input {
+            padding: 10px;
+            border-radius: 6px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-filter {
+            background-color: #0072ff;
+            color: white;
+        }
+
+        .btn-filter:hover {
+            background-color: #00c6ff;
+        }
+
+        .btn-start {
+            background-color: #28a745; 
+            color: white;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2);
+        }
+
+        .btn-start:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+        }
+
+        .btn-submit-manual {
+            background-color: #28a745;
+            color: white;
+            padding: 6px 12px;
+            font-size: 13px;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-submit-manual:hover {
+            background-color: #218838;
+        }
+
+        .status-select {
+            padding: 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: #1e293b;
+            color: white;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .manual-form {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 15px;
+        }
+
+        .attendance-table th, .attendance-table td {
+            padding: 14px 16px;
+            border-bottom: 1px rgba(255, 255, 255, 0.1) solid;
+        }
+
+        .attendance-table th {
+            background-color: rgba(0, 198, 255, 0.2);
+            color: #00c6ff;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 13px;
+            letter-spacing: 0.5px;
+        }
+
+        .attendance-table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .badge {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .badge-present {
+            background-color: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid #28a745;
+        }
+
+        .badge-absent {
+            background-color: rgba(220, 53, 69, 0.2);
+            color: #dc3545;
+            border: 1px solid #dc3545;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 25px;
+            color: #00c6ff;
+            text-decoration: none;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Attendance Management</h2>
+
+        <div class="controls-wrapper">
+            <form method="GET" action="" class="filter-form">
+                <input type="date" name="date" value="{{ selected_date }}" class="date-input" required>
+                <button type="submit" class="btn btn-filter">Filter Date</button>
+            </form>
+
+            <a href="{% url 'camera' %}" class="btn btn-start">📸 Start Attendance</a>
+        </div>
+
+        <div class="table-container">
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Student Name</th>
+                        <th>Roll No</th>
+                        <th>Current Status (Date: {{ selected_date }})</th>
+                        <th>Action (Manual Override)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                        <tr>
+                            <td>{{ student.name }}</td>
+                            <td>{{ student.roll }}</td>
+                            <td>
+                                {% if student.current_status == 'Present' %}
+                                    <span class="badge badge-present">Present</span>
+                                {% elif student.current_status == 'Absent' %}
+                                    <span class="badge badge-absent">Absent</span>
+                                {% else %}
+                                    <span style="color: #aaa; font-style: italic;">No Log Found</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="POST" action="{% url 'mark_attendance_manual' student.id %}" class="manual-form">
+                                    {% csrf_token %}
+                                    <select name="status" class="status-select">
+                                        <option value="Present" {% if student.current_status == 'Present' %}selected{% endif %}>Present</option>
+                                        <option value="Absent" {% if student.current_status == 'Absent' %}selected{% endif %}>Absent</option>
+                                    </select>
+                                    <button type="submit" class="btn-submit-manual">Mark</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" style="text-align: center; color: #aaa; padding: 20px;">No students registered in the database yet.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a href="{% url 'homepage' %}" class="back-link">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

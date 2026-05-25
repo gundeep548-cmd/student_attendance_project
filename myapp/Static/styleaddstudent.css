@@ -1,0 +1,31 @@
+body {
+    background: linear-gradient(to right, #36d1dc, #5b86e5);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: Arial;
+}
+
+.form-box {
+    background: rgba(255,255,255,0.2);
+    padding: 25px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    width: 350px;
+    color: white;
+}
+
+video, img {
+    border-radius: 10px;
+}
+
+.btn-custom {
+    width: 100%;
+    background: #ff7eb3;
+    border: none;
+}
+
+.btn-custom:hover {
+    background: #ff4e91;
+}

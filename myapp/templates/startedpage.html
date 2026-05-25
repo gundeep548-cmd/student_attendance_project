@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - Welcome</title>
+    <style>
+       <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    body, html {
+        width: 100%;
+        height: 100%;
+        background-color: #0b111e; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+    }
+    .page-container {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        max-width: 100%; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .bg-image {
+        width: auto;
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+    .started-btn {
+        position: absolute;
+        bottom: 15%; 
+        left: 7%;
+        width: 25%; 
+        height: 9%;  
+        background-color: rgba(255, 255, 255, 0); 
+        cursor: pointer;
+        border-radius: 30px; 
+    }
+    .started-btn:hover {
+        background-color: rgba(0, 243, 255, 0.05); 
+    }
+</style>
+
+</head>
+<body>
+
+    <div class="page-container">
+        <img src="{% static 'startedpage.jpeg' %}" alt="Smart Attendance Banner" class="bg-image">
+        
+        <a href="{% url 'homepage' %}" class="started-btn" title="Get Started"></a>
+    </div>
+
+</body>
+</html>

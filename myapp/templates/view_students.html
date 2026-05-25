@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Attendance Dashboard</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Base Styling */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        /* Container Card */
+        .dashboard-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 25px;
+            overflow: hidden;
+        }
+
+        /* Header Styling */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #f0f2f5;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-header h2 {
+            font-size: 22px;
+            color: #1e293b;
+            margin: 0;
+            font-weight: 600;
+        }
+
+        /* Modern Table Styling */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .attendance-table th {
+            background-color: #f8fafc;
+            color: #64748b;
+            font-weight: 600;
+            font-size: 13px;
+            text-transform: uppercase;
+            padding: 14px 18px;
+            border-bottom: 2px solid #e2e8f0;
+            letter-spacing: 0.5px;
+        }
+
+        .attendance-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #334155;
+            font-size: 14px;
+        }
+
+        /* Hover Effect on Rows */
+        .attendance-table tbody tr:hover {
+            background-color: #f8fafc;
+            transition: background-color 0.2s ease;
+        }
+
+        /* Status Badges */
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            display: inline-block;
+        }
+
+        .badge-success {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-danger {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* Empty State (If no data available) */
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-card">
+        <div class="dashboard-header">
+            <h2>Student Attendance Report</h2>
+        </div>
+
+        <div class="table-responsive">
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Roll No.</th>
+                        <th>Student Name</th>
+                        <th>Present Days</th>
+                        <th>Total Days</th>
+                        <th>Percentage</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for data in student_data %}
+                    <tr>
+                        <td style="font-weight: 500;">{{ data.roll }}</td>
+                        <td>{{ data.name }}</td>
+                        <td>{{ data.present_count }}</td>
+                        <td>{{ data.total_classes }}</td>
+                        <td>
+                            {% if data.percentage < 75 %}
+                                <span class="badge badge-danger">{{ data.percentage }}%</span>
+                            {% else %}
+                                <span class="badge badge-success">{{ data.percentage }}%</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="no-data">No student attendance records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
